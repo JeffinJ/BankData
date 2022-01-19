@@ -1,0 +1,103 @@
+{
+	"info": {
+		"_postman_id": "f1f1b858-1a0d-4e1c-82cc-c08ff425fa5a",
+		"name": "BankData",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET API to fetch all details of branches, given bank name and a city",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBfaWQiOiJiYW5rZGV0YWlsc2FwcCIsImlhdCI6MTY0MjYyMjQ3MCwiZXhwIjoxNjQzMDU0NDcwfQ.5LW4bug3Cu14mtHZZ5v87KZ7LuDG-flX5n4OMMgIpoA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://enigmatic-scrubland-14973.herokuapp.com/branches/ABHYUDAYA COOPERATIVE BANK LIMITED/MUMBAI/2/2",
+					"protocol": "https",
+					"host": [
+						"enigmatic-scrubland-14973",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"branches",
+						"ABHYUDAYA COOPERATIVE BANK LIMITED",
+						"MUMBAI",
+						"2",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET API to fetch a bank details, given branch IFSC code",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBfaWQiOiJiYW5rZGV0YWlsc2FwcCIsImlhdCI6MTY0MjYyMjQ3MCwiZXhwIjoxNjQzMDU0NDcwfQ.5LW4bug3Cu14mtHZZ5v87KZ7LuDG-flX5n4OMMgIpoA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://enigmatic-scrubland-14973.herokuapp.com/bank/ABHY0065002",
+					"protocol": "https",
+					"host": [
+						"enigmatic-scrubland-14973",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"bank",
+						"ABHY0065002"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate new token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"app_id\":\"bankdetailsapp\",\r\n    \"password\":\"bank@password@\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://enigmatic-scrubland-14973.herokuapp.com/getToken",
+					"protocol": "https",
+					"host": [
+						"enigmatic-scrubland-14973",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"getToken"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
