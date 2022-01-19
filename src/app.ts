@@ -31,6 +31,7 @@ app.get('/branches/:bankName/:city/:limit?/:offset?', validateToken, async (requ
 
     //request.isValid is the result of validateToken function.
     if (request.isValid) {
+        console.log('👍😀 Verified successfully');
 
         try {
             // get parameters

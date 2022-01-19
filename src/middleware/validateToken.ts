@@ -21,6 +21,8 @@ export function validateToken(req: any, res: any, next: any) {
                 if (error) {
                     console.error("Something went wrong while verifying JWT Token");
                 } else {
+                    console.log('👍 Verified successfully');
+
                     validToken = true;
                 }
             });
