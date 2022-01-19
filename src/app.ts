@@ -73,10 +73,6 @@ app.post('/getToken', (request, response) => {
         });
     }
     else {
-        console.log('😡');
-        console.log(APP_ID);
-        console.log(APP_PASSWORD);
-        
         response.sendStatus(403);
     }
 });

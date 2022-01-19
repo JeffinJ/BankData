@@ -1,6 +1,10 @@
 import { app } from "./app";
 import 'dotenv/config'
 
-app.listen(process.env.PORT, () => {
-    console.log(`App started on port ${process.env.PORT}`);
+let port:any = process.env.PORT;
+if (port == null || port == "") {
+  port = 3000;
+}
+app.listen(port, () => {
+    console.log(`App started on port 3000`);
 });
