@@ -21,6 +21,7 @@ app.get('/bank/:ifsc', validateToken, async (request: any, response) => {
             response.json(bankDetails.rows);
         } catch (error) {
             console.error(error);
+            response.sendStatus(500);
         }
     } else {
         response.sendStatus(403);
@@ -51,11 +52,12 @@ app.get('/branches/:bankName/:city/:limit?/:offset?', validateToken, async (requ
             response.json(allBranches.rows);
         } catch (error) {
             console.error(error);
+            response.sendStatus(500);
+
         }
 
     }
     else {
-
         // token is not valid. send 403 Forbidden status as response.
         response.sendStatus(403);
     }
