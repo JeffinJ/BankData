@@ -4,6 +4,7 @@ const _app_password = process.env.APP_PASSWORD;
 const _serverPort = process.env.PORT || 3000;
 const _database_name = process.env.DATABASE_NAME;
 const _database_user = process.env.DATABASE_USER;
+const _database_host = process.env.DATABASE_HOST
 const _database_user_password = process.env.DATABASE_USER_PASSWORD;
 
 
@@ -17,5 +18,6 @@ export const Config = {
 export const DB_Config = {
     database_name: _database_name,
     database_user: _database_user,
-    database_user_password: _database_user_password
+    database_user_password: _database_user_password,
+    database_host: _database_host
 }
