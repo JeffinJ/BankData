@@ -76,3 +76,7 @@ app.post('/getToken', (request, response) => {
         response.sendStatus(403);
     }
 });
+
+app.get('/',(req,res)=>{
+    res.send("BankDetails Application")
+});
