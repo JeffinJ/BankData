@@ -8,7 +8,7 @@ export const app = express();
 
 const APP_ID = Config.app_id;
 const APP_PASSWORD = Config.app_password;
-const APP_SECRET = Config.jwtSecretKey || "dfgh";
+const APP_SECRET = Config.jwtSecretKey;
 
 app.use(express.json());
 
@@ -63,7 +63,7 @@ app.get('/branches/:bankName/:city/:limit?/:offset?', validateToken, async (requ
 
 app.post('/getToken', (request, response) => {
     console.log(request.body);
-    if (request.body.app_id == APP_ID && request.body.password == APP_PASSWORD) {
+    if (request.body.app_id == APP_ID && request.body.password == APP_PASSWORD && APP_SECRET) {
         jwt.sign({ app_id: APP_ID }, APP_SECRET, { expiresIn: "5 days" }, (error, token) => {
             if (error) {
                 console.log(error);
@@ -77,6 +77,6 @@ app.post('/getToken', (request, response) => {
     }
 });
 
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
     res.send("BankDetails Application")
 });
