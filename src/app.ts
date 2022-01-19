@@ -13,12 +13,17 @@ const APP_SECRET = Config.jwtSecretKey;
 app.use(express.json());
 
 app.get('/bank/:ifsc', validateToken, async (request: any, response) => {
+    // JWT validity is checked by validateToken 
     if (request.isValid) {
         try {
             var ifsc = request.params.ifsc;
-            const bankDetails = await pool.query("SELECT * FROM branches WHERE ifsc=$1", [ifsc]);
-            // const allBanks = await pool.query("SELECT * FROM banks FETCH FIRST 10 ROW ONLY;");
-            response.json(bankDetails.rows);
+            if (ifsc) {
+                const bankDetails = await pool.query("SELECT * FROM branches WHERE ifsc=$1", [ifsc]);
+                response.json(bankDetails.rows);
+            } else {
+                response.json("Add IFSC code with your request to get the Bank details.")
+            }
+
         } catch (error) {
             console.error(error);
             response.sendStatus(500);
@@ -41,19 +46,22 @@ app.get('/branches/:bankName/:city/:limit?/:offset?', validateToken, async (requ
             var limit = request.params.limit;
             var offset = request.params.offset;
 
-            // get branch code with branch name.
-            const branchCode = await pool.query("SELECT * FROM banks WHERE name=$1", [bankName]);
+            if (bankName && cityName) {
+                // get branch code with branch name.
+                const branchCode = await pool.query("SELECT * FROM banks WHERE name=$1", [bankName]);
 
-            // get all branches with bank name and city name with Limit and offset
-            const allBranches = await pool.query("SELECT * FROM branches WHERE bank_id=$1 AND city=$2 ORDER BY state LIMIT $3 OFFSET $4",
-                [branchCode.rows[0].id, cityName, limit, offset]);
+                // get all branches with bank name and city name with Limit and offset
+                const allBranches = await pool.query("SELECT * FROM branches WHERE bank_id=$1 AND city=$2 ORDER BY state LIMIT $3 OFFSET $4",
+                    [branchCode.rows[0].id, cityName, limit, offset]);
 
-            // send result as response    
-            response.json(allBranches.rows);
+                // send result as response    
+                response.json(allBranches.rows);
+            }
+
+
         } catch (error) {
             console.error(error);
             response.sendStatus(500);
-
         }
 
     }
