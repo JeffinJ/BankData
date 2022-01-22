@@ -6,12 +6,9 @@ const APP_SECRET = Config.jwtSecretKey;
 
 export function validateToken(req: any, res: any, next: any) {
     const bearerHeader: string = req.headers['authorization'];
-    console.log(bearerHeader);
     if (bearerHeader == undefined || bearerHeader == '') {
         res.sendStatus(403);
     } else {
-        console.log(APP_SECRET);
-
         if (APP_SECRET) {
             const bearer = bearerHeader.split(' ');
             const bearerToken = bearer[1];
@@ -19,19 +16,17 @@ export function validateToken(req: any, res: any, next: any) {
             let validToken: boolean = false;
             jwt.verify(bearerToken, APP_SECRET, (error: any, data: any) => {
                 if (error) {
-                    console.error("Something went wrong while verifying JWT Token");
+                    res.status(403).json({ "error": "Invalid JWT Token" });
                 } else {
-                    console.log('👍 Verified successfully');
-
                     validToken = true;
                 }
             });
-
+            // Return isValid flag value with the request data.
             req.isValid = validToken;
             next();
         }
         else {
-            res.json("SECRET NOT FOUND")
+            res.status(500).json({ "error": "APP_SECRET not found!" })
         }
 
     }

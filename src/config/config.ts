@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 const _jwtSecretKey = process.env.APP_SECRET;
 const _app_id = process.env.APP_ID;
 const _app_password = process.env.APP_PASSWORD;

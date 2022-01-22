@@ -10,12 +10,10 @@ const config_1 = require("../config/config");
 const APP_SECRET = config_1.Config.jwtSecretKey;
 function validateToken(req, res, next) {
     const bearerHeader = req.headers['authorization'];
-    console.log(bearerHeader);
     if (bearerHeader == undefined || bearerHeader == '') {
         res.sendStatus(403);
     }
     else {
-        console.log(APP_SECRET);
         if (APP_SECRET) {
             const bearer = bearerHeader.split(' ');
             const bearerToken = bearer[1];
@@ -25,6 +23,7 @@ function validateToken(req, res, next) {
                     console.error("Something went wrong while verifying JWT Token");
                 }
                 else {
+                    console.log('👍 Verified successfully');
                     validToken = true;
                 }
             });
@@ -32,7 +31,7 @@ function validateToken(req, res, next) {
             next();
         }
         else {
-            res.json("SECRET NOT FOUND");
+            res.json({ "error": "APP_SECRET not found!" });
         }
     }
 }

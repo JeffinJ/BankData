@@ -6,15 +6,15 @@ import { Config } from "./config/config";
 
 export const app = express();
 
-const APP_ID = Config.app_id;
-const APP_PASSWORD = Config.app_password;
-const APP_SECRET = Config.jwtSecretKey;
+let APP_ID = Config.app_id;
+let APP_PASSWORD = Config.app_password;
+let APP_SECRET = Config.jwtSecretKey;
 
 app.use(express.json());
 
 app.get('/bank/:ifsc', validateToken, async (request: any, response) => {
     // JWT validity is checked by validateToken 
-    if (request.isValid) {
+    if (request.isValid && request.params.ifsc) {
         try {
             var ifsc = request.params.ifsc;
             if (ifsc) {
@@ -26,7 +26,7 @@ app.get('/bank/:ifsc', validateToken, async (request: any, response) => {
 
         } catch (error) {
             console.error(error);
-            response.sendStatus(500);
+            response.status(500).json("error");
         }
     } else {
         response.sendStatus(403);
@@ -73,7 +73,9 @@ app.get('/branches/:bankName/:city/:limit?/:offset?', validateToken, async (requ
 });
 
 app.post('/getToken', (request, response) => {
-    console.log(request.body);
+    APP_ID = Config.app_id;
+    APP_PASSWORD = Config.app_password;
+    APP_SECRET = Config.jwtSecretKey;
     if (request.body.app_id == APP_ID && request.body.password == APP_PASSWORD && APP_SECRET) {
         jwt.sign({ app_id: APP_ID }, APP_SECRET, { expiresIn: "5 days" }, (error, token) => {
             if (error) {
@@ -84,7 +86,9 @@ app.post('/getToken', (request, response) => {
         });
     }
     else {
-        response.sendStatus(403);
+        console.log(APP_ID, APP_PASSWORD, APP_SECRET);
+
+        response.status(403).json({ "error": "Something went wrong" });
     }
 });
 

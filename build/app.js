@@ -19,20 +19,26 @@ const validateToken_1 = require("./middleware/validateToken");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = require("./config/config");
 exports.app = (0, express_1.default)();
-const APP_ID = config_1.Config.app_id;
-const APP_PASSWORD = config_1.Config.app_password;
-const APP_SECRET = config_1.Config.jwtSecretKey || "dfgh";
+let APP_ID = config_1.Config.app_id;
+let APP_PASSWORD = config_1.Config.app_password;
+let APP_SECRET = config_1.Config.jwtSecretKey;
 exports.app.use(express_1.default.json());
 exports.app.get('/bank/:ifsc', validateToken_1.validateToken, (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    // JWT validity is checked by validateToken 
     if (request.isValid) {
         try {
             var ifsc = request.params.ifsc;
-            const bankDetails = yield db_1.pool.query("SELECT * FROM branches WHERE ifsc=$1", [ifsc]);
-            // const allBanks = await pool.query("SELECT * FROM banks FETCH FIRST 10 ROW ONLY;");
-            response.json(bankDetails.rows);
+            if (ifsc) {
+                const bankDetails = yield db_1.pool.query("SELECT * FROM branches WHERE ifsc=$1", [ifsc]);
+                response.json(bankDetails.rows);
+            }
+            else {
+                response.json("Add IFSC code with your request to get the Bank details.");
+            }
         }
         catch (error) {
             console.error(error);
+            response.sendStatus(500);
         }
     }
     else {
@@ -42,21 +48,25 @@ exports.app.get('/bank/:ifsc', validateToken_1.validateToken, (request, response
 exports.app.get('/branches/:bankName/:city/:limit?/:offset?', validateToken_1.validateToken, (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     //request.isValid is the result of validateToken function.
     if (request.isValid) {
+        console.log('👍😀 Verified successfully');
         try {
             // get parameters
             var bankName = request.params.bankName;
             var cityName = request.params.city;
             var limit = request.params.limit;
             var offset = request.params.offset;
-            // get branch code with branch name.
-            const branchCode = yield db_1.pool.query("SELECT * FROM banks WHERE name=$1", [bankName]);
-            // get all branches with bank name and city name with Limit and offset
-            const allBranches = yield db_1.pool.query("SELECT * FROM branches WHERE bank_id=$1 AND city=$2 ORDER BY state LIMIT $3 OFFSET $4", [branchCode.rows[0].id, cityName, limit, offset]);
-            // send result as response    
-            response.json(allBranches.rows);
+            if (bankName && cityName) {
+                // get branch code with branch name.
+                const branchCode = yield db_1.pool.query("SELECT * FROM banks WHERE name=$1", [bankName]);
+                // get all branches with bank name and city name with Limit and offset
+                const allBranches = yield db_1.pool.query("SELECT * FROM branches WHERE bank_id=$1 AND city=$2 ORDER BY state LIMIT $3 OFFSET $4", [branchCode.rows[0].id, cityName, limit, offset]);
+                // send result as response    
+                response.json(allBranches.rows);
+            }
         }
         catch (error) {
             console.error(error);
+            response.sendStatus(500);
         }
     }
     else {
@@ -65,8 +75,10 @@ exports.app.get('/branches/:bankName/:city/:limit?/:offset?', validateToken_1.va
     }
 }));
 exports.app.post('/getToken', (request, response) => {
-    console.log(request.body);
-    if (request.body.app_id == APP_ID && request.body.password == APP_PASSWORD) {
+    APP_ID = config_1.Config.app_id;
+    APP_PASSWORD = config_1.Config.app_password;
+    APP_SECRET = config_1.Config.jwtSecretKey;
+    if (request.body.app_id == APP_ID && request.body.password == APP_PASSWORD && APP_SECRET) {
         jsonwebtoken_1.default.sign({ app_id: APP_ID }, APP_SECRET, { expiresIn: "5 days" }, (error, token) => {
             if (error) {
                 console.log(error);
@@ -77,7 +89,8 @@ exports.app.post('/getToken', (request, response) => {
         });
     }
     else {
-        response.sendStatus(403);
+        console.log(APP_ID, APP_PASSWORD, APP_SECRET);
+        response.status(403).json({ "error": "Something went wrong" });
     }
 });
 exports.app.get('/', (req, res) => {
