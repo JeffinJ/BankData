@@ -9,10 +9,12 @@ const _database_name = process.env.DATABASE_NAME;
 const _database_user = process.env.DATABASE_USER;
 const _database_host = process.env.DATABASE_HOST
 const _database_user_password = process.env.DATABASE_USER_PASSWORD;
+const _JWT_validity = process.env.JWT_TOKEN_VALIDITY;
 
 
 export const Config = {
     jwtSecretKey: _jwtSecretKey,
+    jwt_validity: _JWT_validity,
     app_id: _app_id,
     app_password: _app_password,
     serverPort: _serverPort,

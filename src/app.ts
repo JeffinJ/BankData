@@ -16,7 +16,7 @@ app.get('/bank/:ifsc', validateToken, async (request: any, response) => {
     // JWT validity is checked by validateToken 
     if (request.isValid) {
         try {
-            let ifsc: string = request.params.ifsc;
+            const ifsc: string = request.params.ifsc;
             // check if ifsc contains only white spaces.
             if (ifsc.trim().length) {
                 const bankDetails = await pool.query("SELECT * FROM branches WHERE ifsc=$1", [ifsc]);
@@ -42,10 +42,10 @@ app.get('/branches/:bankName/:city/:limit?/:offset?', validateToken, async (requ
 
         try {
             // get parameters
-            var bankName = request.params.bankName;
-            var cityName = request.params.city;
-            var limit = request.params.limit;
-            var offset = request.params.offset;
+            const bankName = request.params.bankName;
+            const cityName = request.params.city;
+            const limit = request.params.limit;
+            const offset = request.params.offset;
 
             if (bankName && cityName) {
                 // get branch code with branch name.
@@ -76,7 +76,7 @@ app.get('/branches/:bankName/:city/:limit?/:offset?', validateToken, async (requ
 app.post('/getToken', (request, response) => {
 
     if (request.body.app_id == APP_ID && request.body.password == APP_PASSWORD && APP_SECRET) {
-        jwt.sign({ app_id: APP_ID }, APP_SECRET, { expiresIn: "5 days" }, (error, token) => {
+        jwt.sign({ app_id: APP_ID }, APP_SECRET, { expiresIn: Config.jwt_validity }, (error, token) => {
             if (error) {
                 console.log(error);
             } else {
