@@ -1,5 +1,5 @@
-BankData Project:
------------------
+BankData Project: 🏦
+--------------------
 Node-Express - Postgres - JWT Authentication - TypeScript.
 ----------------------------------------------------------
 
