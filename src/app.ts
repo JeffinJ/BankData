@@ -6,18 +6,19 @@ import { Config } from "./config/config";
 
 export const app = express();
 
-let APP_ID = Config.app_id;
-let APP_PASSWORD = Config.app_password;
-let APP_SECRET = Config.jwtSecretKey;
+const APP_ID = Config.app_id;
+const APP_PASSWORD = Config.app_password;
+const APP_SECRET = Config.jwtSecretKey;
 
 app.use(express.json());
 
 app.get('/bank/:ifsc', validateToken, async (request: any, response) => {
     // JWT validity is checked by validateToken 
-    if (request.isValid && request.params.ifsc) {
+    if (request.isValid) {
         try {
-            var ifsc = request.params.ifsc;
-            if (ifsc) {
+            let ifsc: string = request.params.ifsc;
+            // check if ifsc contains only white spaces.
+            if (ifsc.trim().length) {
                 const bankDetails = await pool.query("SELECT * FROM branches WHERE ifsc=$1", [ifsc]);
                 response.json(bankDetails.rows);
             } else {
@@ -73,9 +74,7 @@ app.get('/branches/:bankName/:city/:limit?/:offset?', validateToken, async (requ
 });
 
 app.post('/getToken', (request, response) => {
-    APP_ID = Config.app_id;
-    APP_PASSWORD = Config.app_password;
-    APP_SECRET = Config.jwtSecretKey;
+
     if (request.body.app_id == APP_ID && request.body.password == APP_PASSWORD && APP_SECRET) {
         jwt.sign({ app_id: APP_ID }, APP_SECRET, { expiresIn: "5 days" }, (error, token) => {
             if (error) {
